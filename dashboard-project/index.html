@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mace Ryan Reyes - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- Microsoft Authentication Library -->
+    <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.24.0/js/msal-browser.min.js"></script>
+</head>
+<body>
+    <!-- Microsoft Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container microsoft-login">
+            <div class="microsoft-logo">
+                <i class="fab fa-microsoft"></i>
+                <h2>Microsoft Account</h2>
+            </div>
+            
+            <!-- Login Form (Default) -->
+            <div class="login-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email, phone, or Skype</label>
+                    <input type="email" id="email" class="form-input" placeholder="someone@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password">
+                </div>
+                
+                <div class="login-options">
+                    <div class="keep-signed">
+                        <input type="checkbox" id="keepSigned">
+                        <label for="keepSigned">Keep me signed in</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot my password</a>
+                </div>
+                
+                <button type="submit" class="microsoft-btn" id="microsoftLogin">
+                    <i class="fab fa-microsoft"></i> Sign in
+                </button>
+                <button type="button" class="demo-btn" id="demoLogin">
+                    Use Demo Account
+                </button>
+                <button type="button" class="register-btn" id="showRegisterBtn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                
+                <div class="login-note">
+                    <p>For demo purposes, use:</p>
+                    <p>Email: admin@copeland.com | Password: admin123</p>
+                    <p class="warning">⚠️ This is a demo system. Use Microsoft credentials for real authentication.</p>
+                </div>
+            </div>
+            
+            <!-- Registration Form (Hidden by default) -->
+            <div class="register-form" id="registerForm">
+                <h2 class="register-title">Create New Account</h2>
+                
+                <div class="form-group">
+                    <label for="regFirstName" class="form-label">First Name *</label>
+                    <input type="text" id="regFirstName" class="form-input" placeholder="Enter first name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regLastName" class="form-label">Last Name *</label>
+                    <input type="text" id="regLastName" class="form-input" placeholder="Enter last name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail" class="form-label">Email Address *</label>
+                    <input type="email" id="regEmail" class="form-input" placeholder="Enter email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword" class="form-label">Password *</label>
+                    <input type="password" id="regPassword" class="form-input" placeholder="Create password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regShift" class="form-label">Current Shift *</label>
+                    <select id="regShift" class="form-input" required>
+                        <option value="">Select Shift</option>
+                        <option value="Morning Shift">Morning Shift</option>
+                        <option value="Mid Shift">Mid Shift</option>
+                        <option value="Night Shift">Night Shift</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPosition" class="form-label">Position *</label>
+                    <select id="regPosition" class="form-input" required>
+                        <option value="">Select Position</option>
+                        <option value="Team Lead">Team Lead</option>
+                        <option value="Member">Member</option>
+                    </select>
+                </div>
+                
+                <div class="register-buttons">
+                    <button type="button" class="microsoft-btn" id="registerAccountBtn">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                    <button type="button" class="demo-btn" id="showLoginBtn">
+                        Back to Login
+                    </button>
+                </div>
+                
+                <div class="register-note">
+                    <p>All fields are required. After registration, data will be saved to localStorage.</p>
+                    <p class="warning">⚠️ You can also sign in with Microsoft credentials after account creation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard Container -->
+    <div class="container" id="mainContainer">
+        <!-- Left Sidebar - 20% -->
+        <div class="left-sidebar">
+            <!-- User Profile Section with Status -->
+            <div class="profile-section">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                            <div class="status-indicator available" id="userStatusIndicator"></div>
+                            <!-- Add schedule icon container -->
+                            <div id="userScheduleIcon" class="schedule-icon" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="user-details">
+                        <div class="profile-name" id="userName">Loading...</div>
+                        <div class="user-role" id="userRole">Technical Support</div>
+                        <div class="status-selector">
+                            <select id="userStatusSelect" class="status-dropdown">
+                                <option value="available" selected>🟢 Available</option>
+                                <option value="busy">🔴 Busy</option>
+                                <option value="backoffice">🟠 Back Office</option>
+                                <option value="meeting">🔴 Meeting</option>
+                                <option value="callonque">🔵 Call Onque</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button id="settingsButton" class="settings-icon-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+            
+            <div class="section-title">Menu Section List</div>
+            <ul class="menu-section-list" id="menuSectionList">
+                <!-- Menu items will be loaded dynamically from JavaScript -->
+            </ul>
+            
+            <div class="activity-log">
+                <h3>Recent ACTIVITY LOG</h3>
+                <div class="log-entry">
+                    [System] Welcome to the new dashboard
+                </div>
+                <div class="log-date">${new Date().toLocaleDateString()}</div>
+            </div>
+        </div>
+        
+        <!-- Main Content - 70% -->
+        <div class="main-content main-content-with-announcement">
+            <!-- Announcement Section -->
+            <div class="announcement-section">
+                <marquee class="blink">⚠️ IMPORTANT ANNOUNCEMENT: Dito po makikita ang mga announcement with expiration to be set ⚠️</marquee>
+            </div>
+            
+            <!-- Page Content Container -->
+            <div id="page-content-container">
+                <!-- Pages will be loaded dynamically here -->
+            </div>
+        </div>
+        
+        <!-- Right Sidebar - 10% -->
+        <div class="right-sidebar">
+            <!-- MY REMINDERS Section -->
+            <div class="reminders-section">
+                <h2 class="reminders-title">MY REMINDERS</h2>
+                <div class="reminders-subtitle">(Auto send Email notification)</div>
+                
+                <div class="credential-note">Connect+ Credential</div>
+                
+                <div class="reminders-note">
+                    Set your reminders to receive automatic email notifications
+                </div>
+            </div>
+            
+            <!-- RSI Counter Section -->
+            <div class="rsi-section">
+                <h2 class="rsi-title">RSI Counter</h2>
+                <div class="threshold-set">Threshold Set: weekly</div>
+                
+                <div class="threshold-detail">
+                    <div class="threshold-value">(40 hours)</div>
+                </div>
+            </div>
+            
+            <!-- Team Status Widget -->
+            <div class="team-status-widget">
+                <h2 class="widget-title">TEAM STATUS</h2>
+                <div class="status-legend">
+                    <div class="legend-item available">🟢 Available</div>
+                    <div class="legend-item busy">🔴 Busy</div>
+                    <div class="legend-item backoffice">🟠 Back Office</div>
+                    <div class="legend-item meeting">🔴 Meeting</div>
+                    <div class="legend-item callonque">🔵 Call Onque</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load JavaScript Files -->
+    <script src="scripts/config.js"></script>
+    <script src="scripts/userManager.js"></script>
+    <script src="scripts/scheduleManager.js"></script>
+    <script src="scripts/menuManager.js"></script>
+    <script src="scripts/pageManager.js"></script>
+    <!-- Add missing page scripts -->
+    <script src="scripts/pages/schedule.js"></script>
+    <script src="scripts/pages/service.js"></script>
+    <script src="scripts/pages/assignment.js"></script>
+    <script src="scripts/pages/files.js"></script>
+    <script src="scripts/pages/notes.js"></script>
+    <script src="scripts/pages/support.js"></script>
+    <script src="scripts/pages/procedural.js"></script>
+    <script src="scripts/pages/skills.js"></script>
+    <!-- Existing page scripts -->
+    <script src="scripts/pages/mailbox.js"></script>
+    <script src="scripts/pages/connectsites.js"></script>
+    <script src="scripts/pages/partnumber.js"></script>
+    <script src="scripts/pages/members.js"></script>
+    <script src="scripts/pages/connectplus.js"></script>
+    <script src="scripts/pages/usermanagement.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
